@@ -1,3 +1,5 @@
+# Original code from CleanRL and TD7 (MIT License)
+# Modifications Copyright (c) 2025 Yaniv Oren et al.
 import os
 import random
 import time

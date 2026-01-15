@@ -1,4 +1,5 @@
-# docs and experiment results can be found at https://docs.cleanrl.dev/rl-algorithms/sac/#sac_continuous_actionpy
+# Original code from CleanRL (MIT License)
+# Modifications Copyright (c) 2025 Yaniv Oren et al.
 import os
 import random
 import time

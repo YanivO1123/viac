@@ -37,7 +37,13 @@ See the ```Args``` class in each file for description of other command-line argu
 
 This repository is based on a fork of the [CleanRL](https://github.com/vwxyzjn/cleanrl) repository, with value-improvement extensions to their implementations of [TD3](https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/td3_continuous_action.py) and [SAC](https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/sac_continuous_action.py).
 
-The implementation of VI-TD7 is based on the [official repository](https://github.com/sfujim/TD7) for the [TD7 (For SALE: State-Action Representation Learning for Deep Reinforcement Learning) paper](https://proceedings.neurips.cc/paper_files/paper/2023/file/c20ac0df6c213db6d3a930fe9c7296c8-Paper-Conference.pdf).
+The implementation of VI-TD7 is based on the [official repository](https://github.com/sfujim/TD7) accompanying the paper [For SALE: State-Action Representation Learning for Deep Reinforcement Learning](https://proceedings.neurips.cc/paper_files/paper/2023/file/c20ac0df6c213db6d3a930fe9c7296c8-Paper-Conference.pdf).
+
+## License
+
+This project is released under the MIT License.
+
+It includes code derived from the [CleanRL](https://github.com/vwxyzjn/cleanrl) and [TD7](https://github.com/sfujim/TD7) repositories, both of which are distributed under the MIT License.
 
 ## Citation:
 Please cite us as:
@@ -48,5 +54,4 @@ Please cite us as:
   booktitle = {The Thirty-ninth Annual Conference on Neural Information Processing Systems},
   year      = {2025},
 }
-
 ```
