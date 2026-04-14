@@ -1,0 +1,21 @@
+[project]
+name = "topi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "ale-py>=0.8.1",
+    "dmc2gymnasium",
+    "gymnasium[accept-rom-license,atari]==0.29.1",
+    "imageio>=2.37.3",
+    "numpy>=2.4.4",
+    "opencv-python-headless>=4.13.0.92",
+    "stable-baselines3>=2.8.0",
+    "tensorboard>=2.20.0",
+    "tyro>=1.0.12",
+    "wandb>=0.25.1",
+]
+
+[tool.uv.sources]
+dmc2gymnasium = { git = "https://github.com/imgeorgiev/dmc2gymnasium.git" }

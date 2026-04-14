@@ -320,29 +320,29 @@ if __name__ == "__main__":
                         qf2_values = qf2(data.observations)
                         agg_qf_values = aggregate_qf_values(qf1_values, qf2_values)
 
-                        # 1. Compute sigma_Q^2 (Variance of the Q-ensemble)
+                        # Compute V(s) = E_{a ~ pi} [Q(s,a)]
+                        # Use the current action_probs from the actor
+                        vf_values = (action_probs * agg_qf_values).sum(dim=1, keepdim=True)
+
+                        # Compute A(s,a) = Q(s,a) - V(s)
+                        adv = agg_qf_values - vf_values
+
+                        # Compute sigma_Q^2 (Variance of the Q-ensemble)
                         # For two values, Var(x, y) = ((x-y)^2) / 4
                         sigma_q_sq = 0.25 * (qf1_values - qf2_values)**2
 
-                        # 2. Compute V(s) = E_{a ~ pi} [Q(s,a)]
-                        # Use the current action_probs from the actor
-                        v_s = (action_probs * agg_qf_values).sum(dim=1, keepdim=True)
-
-                        # 3. Compute A(s,a) = Q(s,a) - V(s)
-                        adv = agg_qf_values - v_s
-
-                        # 4. Compute sigma_A^2(s,a)
+                        # Compute sigma_A^2(s,a)
                         # sigma_A^2 = (1-pi)^2 * sigma_Q^2 + sum_{b!=a} (sigma_Q^2(b) * pi(b)^2)
                         # We can compute the sum efficiently: sum_{all} - (current)
                         weighted_var_all = (sigma_q_sq * (action_probs**2)).sum(dim=1, keepdim=True)
                         sigma_a_sq = ((1 - action_probs)**2 * sigma_q_sq) + (weighted_var_all - (sigma_q_sq * (action_probs**2)))
 
-                        # 5. Compute the total variance sigma^2(s,a)
-                        # sigma^2 = (tau^2 + sigma_A^2) * (beta / tau^2)
-                        sigma_sq = (args.tau_sq + sigma_a_sq) #* (args.beta / args.tau_sq)
+                        # Compute the total variance sigma^2(s,a)
+                        # sigma^2 = (tau^2 + sigma_A^2)
+                        sigma_sq = (args.tau_sq + sigma_a_sq)
 
-                    # 6. Compute the Actor Loss
-                    # The operator is pi_new \propto pi_old * exp(A / sigma_sq).
+                    # Compute the Actor Loss
+                    # The operator is pi_new \propto exp(A / (alpha * sigma_sq)).
                     # In the discrete case, the gradient of the KL divergence boils down to:
                     actor_loss = (action_probs * (alpha * log_pi - adv / sigma_sq)).mean()
                 else:
@@ -377,6 +377,8 @@ if __name__ == "__main__":
             if global_step % 100 == 0:
                 writer.add_scalar("charts/qf1_values", qf1_a_values.mean().item(), global_step)
                 writer.add_scalar("charts/qf2_values", qf2_a_values.mean().item(), global_step)
+                writer.add_scalar("charts/agg_qf_values", agg_qf_values.mean().item(), global_step)
+                writer.add_scalar("charts/log_pi", log_pi.mean().item(), global_step)
                 writer.add_scalar("losses/qf1_loss", qf1_loss.item(), global_step)
                 writer.add_scalar("losses/qf2_loss", qf2_loss.item(), global_step)
                 writer.add_scalar("losses/qf_loss", qf_loss.item() / 2.0, global_step)
@@ -387,8 +389,9 @@ if __name__ == "__main__":
                 if args.autotune:
                     writer.add_scalar("losses/alpha_loss", alpha_loss.item(), global_step)
                 if args.topi:
-                    writer.add_scalar("charts/sigma_q_sq", sigma_q_sq.mean().item(), global_step)
+                    writer.add_scalar("charts/vf_values", vf_values.mean().item(), global_step)
                     writer.add_scalar("charts/adv", adv.mean().item(), global_step)
+                    writer.add_scalar("charts/sigma_q_sq", sigma_q_sq.mean().item(), global_step)
                     writer.add_scalar("charts/sigma_a_sq", sigma_a_sq.mean().item(), global_step)
                     writer.add_scalar("charts/sigma_sq", sigma_sq.mean().item(), global_step)
 
