@@ -26,8 +26,12 @@ from cleanrl_utils.buffers import ReplayBuffer
 
 @dataclass
 class Args:
+    results_path: str = "viac"
+    """The path to the location where the results are to be saved"""
     exp_name: str = "topi"
     """the name of this experiment"""
+    run_name: str = None
+    """the full name of this run"""
     seed: int = 1
     """seed of the experiment"""
     torch_deterministic: bool = True
