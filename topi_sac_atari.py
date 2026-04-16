@@ -82,6 +82,8 @@ class Args:
     """whether to use I_opt for policy improvement"""
     tau_sq: float = 1.0
     """tau^2 constant for TOPI"""
+    debug_advantage_weights: bool = False
+    """If true, sets advantage weights to zero, and recovers baseline SAC"""
 
 
 def make_env(env_id, seed, idx, capture_video, run_name):
@@ -340,6 +342,9 @@ if __name__ == "__main__":
                         # We can compute the sum efficiently: sum_{all} - (current)
                         weighted_var_all = (sigma_q_sq * (action_probs**2)).sum(dim=1, keepdim=True)
                         sigma_a_sq = ((1 - action_probs)**2 * sigma_q_sq) + (weighted_var_all - (sigma_q_sq * (action_probs**2)))
+
+                        if args.debug_advantage_weights:
+                            sigma_a_sq = torch.zeros_like(sigma_a_sq)
 
                         # Compute the total variance sigma^2(s,a)
                         # sigma^2 = (tau^2 + sigma_A^2)
