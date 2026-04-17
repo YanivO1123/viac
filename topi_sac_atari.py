@@ -72,7 +72,7 @@ class Args:
     """the frequency of updates for the target networks"""
     alpha: float = 0.2
     """Entropy regularization coefficient."""
-    autotune: bool = False
+    autotune: bool = True
     """automatic tuning of the entropy coefficient"""
     target_entropy_scale: float = 0.89
     """coefficient for scaling the autotune entropy target"""
